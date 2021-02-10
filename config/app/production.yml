@@ -1,0 +1,16 @@
+api:
+  port: ":7100"
+  timeout: 1000
+auth:
+  private_key: "privatekey"
+  expire: "+30m"
+database:
+    mysql: 
+      host: "localhost"
+      port: "3306"
+      dbname: "foodmenu"
+      user: "root"
+      password: "root"
+      sslmode: ""
+context:
+  timeout: 2
