@@ -7,6 +7,7 @@ import (
 
 	mock "github.com/stretchr/testify/mock"
 
+	request "github.com/cpartogi/foodmenu/schema/request"
 	response "github.com/cpartogi/foodmenu/schema/response"
 )
 
@@ -23,6 +24,86 @@ func (_m *Usecase) MenuType(ctx context.Context) (mt []response.MenuType, err er
 		r0 = rf(ctx)
 	} else {
 		r0 = ret.Get(0).([]response.MenuType)
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(context.Context) error); ok {
+		r1 = rf(ctx)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+func (_m *Usecase) MenuAdd(ctx context.Context, addm request.Menu) (mn response.MenuAdd, err error) {
+	ret := _m.Called(ctx)
+
+	var r0 response.MenuAdd
+	if rf, ok := ret.Get(0).(func(context.Context, request.Menu) response.MenuAdd); ok {
+		r0 = rf(ctx, addm)
+	} else {
+		r0 = ret.Get(0).(response.MenuAdd)
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(context.Context) error); ok {
+		r1 = rf(ctx)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+func (_m *Usecase) MenuDelete(ctx context.Context, menu_id string) (md response.MenuDelete, err error) {
+	ret := _m.Called(ctx)
+
+	var r0 response.MenuDelete
+	if rf, ok := ret.Get(0).(func(context.Context, string) response.MenuDelete); ok {
+		r0 = rf(ctx, menu_id)
+	} else {
+		r0 = ret.Get(0).(response.MenuDelete)
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(context.Context) error); ok {
+		r1 = rf(ctx)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+func (_m *Usecase) MenuUpdate(ctx context.Context, menu_id string, upm request.MenuUpdate) (mu response.MenuUpdate, err error) {
+	ret := _m.Called(ctx)
+
+	var r0 response.MenuUpdate
+	if rf, ok := ret.Get(0).(func(context.Context, string, request.MenuUpdate) response.MenuUpdate); ok {
+		r0 = rf(ctx, menu_id, upm)
+	} else {
+		r0 = ret.Get(0).(response.MenuUpdate)
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(context.Context) error); ok {
+		r1 = rf(ctx)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+func (_m *Usecase) MenuList(ctx context.Context, warteg_id string, menu_type_id int) (list []response.MenuList, err error) {
+	ret := _m.Called(ctx)
+
+	var r0 []response.MenuList
+	if rf, ok := ret.Get(0).(func(context.Context, string, int) []response.MenuList); ok {
+		r0 = rf(ctx, warteg_id, menu_type_id)
+	} else {
+		r0 = ret.Get(0).([]response.MenuList)
 	}
 
 	var r1 error

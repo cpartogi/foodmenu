@@ -10,7 +10,6 @@ import (
 
 	_ "github.com/cpartogi/foodmenu/docs"
 	appInit "github.com/cpartogi/foodmenu/init"
-	"github.com/labstack/echo-contrib/prometheus"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	"github.com/spf13/viper"
@@ -35,15 +34,13 @@ func main() {
 
 	// Middleware
 	e.Use(middleware.Recover())
+	e.Use(middleware.RequestID())
 	e.Use(middleware.Logger())
 
 	// Routes
 	e.GET("/", func(c echo.Context) error {
 		return c.String(http.StatusOK, "Server is healthy")
 	})
-
-	p := prometheus.NewPrometheus("echo", nil)
-	p.Use(e)
 
 	timeoutContext := time.Duration(viper.GetInt("context.timeout")) * time.Second
 
