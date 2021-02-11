@@ -383,7 +383,7 @@ func TestMenuUpdate(t *testing.T) {
 		)
 	}{
 		{
-			name: "#1 unprocessable update menu",
+			name: "#1 success update",
 			expectedInput: input{
 				menu_id: "abc",
 				req: map[string]interface{}{
@@ -391,6 +391,55 @@ func TestMenuUpdate(t *testing.T) {
 					"menu_name":    "b",
 					"menu_picture": "c",
 					"menu_price":   1,
+					"menu_type_id": 1,
+					"warteg_id":    "d",
+				},
+			},
+			expectedOutput: output{nil, http.StatusOK},
+			configureMock: func(
+				payload input,
+				mockMenu *mocks.Usecase,
+			) {
+				mnResponse := response.MenuUpdate{}
+
+				mockMenu.
+					On("MenuUpdate", mock.Anything, mock.Anything).
+					Return(mnResponse, nil)
+			},
+		},
+		{
+			name: "#2 bad request update",
+			expectedInput: input{
+				menu_id: "abc",
+				req: map[string]interface{}{
+					"menu_detail":  "a",
+					"menu_name":    "b",
+					"menu_picture": "c",
+					"menu_price":   1,
+					"warteg_id":    "d",
+				},
+			},
+			expectedOutput: output{nil, http.StatusBadRequest},
+			configureMock: func(
+				payload input,
+				mockMenu *mocks.Usecase,
+			) {
+				mnResponse := response.MenuUpdate{}
+
+				mockMenu.
+					On("MenuUpdate", mock.Anything, mock.Anything).
+					Return(mnResponse, nil)
+			},
+		},
+		{
+			name: "#3 unprocessable update",
+			expectedInput: input{
+				menu_id: "abc",
+				req: map[string]interface{}{
+					"menu_detail":  "a",
+					"menu_name":    "b",
+					"menu_picture": "c",
+					"menu_price":   "1",
 					"menu_type_id": 1,
 					"warteg_id":    "d",
 				},
@@ -407,18 +456,45 @@ func TestMenuUpdate(t *testing.T) {
 					Return(mnResponse, nil)
 			},
 		},
+		{
+			name: "#4 internal server error update",
+			expectedInput: input{
+				menu_id: "abc",
+				req: map[string]interface{}{
+					"menu_detail":  "a",
+					"menu_name":    "b",
+					"menu_picture": "c",
+					"menu_price":   1,
+					"menu_type_id": 1,
+					"warteg_id":    "d",
+				},
+			},
+			expectedOutput: output{nil, http.StatusInternalServerError},
+			configureMock: func(
+				payload input,
+				mockMenu *mocks.Usecase,
+			) {
+				mnResponse := response.MenuUpdate{}
+
+				mockMenu.
+					On("MenuUpdate", mock.Anything, mock.Anything).
+					Return(mnResponse, errorMenu)
+			},
+		},
 	}
 
 	for _, testCase := range cases {
 		t.Run(testCase.name, func(t *testing.T) {
 			mockMenu := new(mocks.Usecase)
 
-			menu_id := testCase.expectedInput.menu_id
+			//	menu_id := testCase.expectedInput.menu_id
+
+			j, err := json.Marshal(testCase.expectedInput.req)
 
 			e := echo.New()
 
 			req, err := http.NewRequest(echo.PUT, "/v1/menu/:menu_id",
-				strings.NewReader(string(menu_id)))
+				strings.NewReader(string(j)))
 
 			assert.NoError(t, err)
 			req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
