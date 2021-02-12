@@ -7,7 +7,6 @@ import (
 	"github.com/cpartogi/foodmenu/module/menu"
 	"github.com/cpartogi/foodmenu/schema/request"
 	"github.com/cpartogi/foodmenu/schema/response"
-	log "go.uber.org/zap"
 )
 
 // AuthUsecase will create a usecase with its required repo
@@ -109,7 +108,6 @@ func (u *MenuUsecase) MenuUpdate(ctx context.Context, menu_id string, upm reques
 func (u *MenuUsecase) MenuList(ctx context.Context, warteg_id string, menu_type_id int) (list []response.MenuList, err error) {
 	resp := []response.MenuList{}
 
-	log.S().Info(string(warteg_id))
 	menulist, err := u.menuRepo.MenuList(ctx, warteg_id, menu_type_id)
 
 	if err != nil {
@@ -118,4 +116,16 @@ func (u *MenuUsecase) MenuList(ctx context.Context, warteg_id string, menu_type_
 
 	return menulist, err
 
+}
+
+func (u *MenuUsecase) MenuDetail(ctx context.Context, menu_id string) (mnd response.MenuDetail, err error) {
+	resp := response.MenuDetail{}
+
+	mdetail, err := u.menuRepo.MenuDetail(ctx, menu_id)
+
+	if err != nil {
+		return resp, err
+	}
+
+	return mdetail, err
 }

@@ -27,6 +27,7 @@ func NewMenuHandler(e *echo.Echo, us menu.Usecase) {
 	router.POST("/menu", handler.MenuAdd)
 	router.DELETE("/menu/:menu_id", handler.MenuDelete)
 	router.PUT("/menu/:menu_id", handler.MenuUpdate)
+	router.GET("/menu/:menu_id", handler.MenuDetail)
 }
 
 // Menu Type godoc
@@ -191,4 +192,30 @@ func (h *MenuHandler) MenuList(c echo.Context) error {
 	}
 
 	return utils.SuccessResponse(c, constant.SuccessGetData, menu)
+}
+
+// MenuDetail godoc
+// @Summary  Menu Detail
+// @Description Menu Detail
+// @Tags Menu
+// @Accept  json
+// @Produce  json
+// @Param menu_id path string true "Menu Id"
+// @Success 200 {object} response.SwaggerMenuDetail
+// @Failure 400 {object} response.Base
+// @Failure 404 {object} response.Base
+// @Failure 422 {object} response.Base
+// @Failure 500 {object} response.Base
+// @Router /v1/menu/{menu_id} [get]
+// MenuDetail handles HTTP request for menu detail
+func (h *MenuHandler) MenuDetail(c echo.Context) error {
+	ctx := c.Request().Context()
+	menuId := c.Param("menu_id")
+
+	md, err := h.menuUsecase.MenuDetail(ctx, menuId)
+	if err != nil {
+		return utils.ErrorResponse(c, err, map[string]interface{}{})
+	}
+
+	return utils.SuccessResponse(c, constant.SuccessGetData, md)
 }

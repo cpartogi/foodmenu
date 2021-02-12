@@ -2,6 +2,7 @@ package store
 
 import (
 	"context"
+	"database/sql"
 
 	"github.com/cpartogi/foodmenu/constant"
 	"github.com/cpartogi/foodmenu/schema/request"
@@ -197,4 +198,29 @@ func (q *Queries) MenuList(ctx context.Context, warteg_id string, menu_type_id i
 	}
 	return y, err
 
+}
+
+const getMenuDetail = `-- name: MenuDetail :one
+SELECT b.menu_id, a.menu_type_name, b.warteg_id, b.menu_name, b.menu_detail, b.menu_picture, b.menu_price FROM tb_menu_type a, tb_menu b
+WHERE a.menu_type_id=b.menu_type_id AND b.menu_id = ?
+`
+
+func (q *Queries) MenuDetail(ctx context.Context, menu_id string) (mnd response.MenuDetail, err error) {
+	row := q.db.QueryRowContext(ctx, getMenuDetail, menu_id)
+	var i response.MenuDetail
+	err = row.Scan(
+		&i.MenuId,
+		&i.MenuTypeName,
+		&i.WartegId,
+		&i.MenuName,
+		&i.MenuDetail,
+		&i.MenuPicture,
+		&i.MenuPrice,
+	)
+
+	if err == sql.ErrNoRows {
+		err = constant.ErrNotFound
+	}
+
+	return i, err
 }

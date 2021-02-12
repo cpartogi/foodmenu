@@ -35,3 +35,13 @@ type MenuList struct {
 	MenuPicture  string `json:"menu_picture"`
 	MenuPrice    int    `json:"menu_price"`
 }
+
+type MenuDetail struct {
+	MenuId       string `json:"menu_id"`
+	MenuTypeName string `json:"menu_type_name"`
+	WartegId     string `json:"warteg_id"`
+	MenuName     string `json:"menu_name"`
+	MenuDetail   string `json:"menu_detail"`
+	MenuPicture  string `json:"menu_picture"`
+	MenuPrice    int    `json:"menu_price"`
+}

@@ -594,3 +594,93 @@ func TestMenuList(t *testing.T) {
 		})
 	}
 }
+
+func TestMenuDetail(t *testing.T) {
+	type input struct {
+		menu_id string
+	}
+
+	type output struct {
+		err        error
+		statusCode int
+	}
+
+	cases := []struct {
+		name           string
+		expectedInput  input
+		expectedOutput output
+		configureMock  func(
+			payload input,
+			mockMenu *mocks.Usecase,
+		)
+	}{
+		{
+			name: "#1 success get data",
+			expectedInput: input{
+				menu_id: "abc",
+			},
+			expectedOutput: output{nil, http.StatusOK},
+			configureMock: func(
+				payload input,
+				mockMenu *mocks.Usecase,
+			) {
+				mnResponse := response.MenuDetail{}
+
+				mockMenu.
+					On("MenuDetail", mock.Anything, mock.Anything).
+					Return(mnResponse, nil)
+			},
+		},
+		{
+			name: "#2 internal server error update",
+			expectedInput: input{
+				menu_id: "abc",
+			},
+			expectedOutput: output{nil, http.StatusInternalServerError},
+			configureMock: func(
+				payload input,
+				mockMenu *mocks.Usecase,
+			) {
+				mnResponse := response.MenuDetail{}
+
+				mockMenu.
+					On("MenuDetail", mock.Anything, mock.Anything).
+					Return(mnResponse, errorMenu)
+			},
+		},
+	}
+
+	for _, testCase := range cases {
+		t.Run(testCase.name, func(t *testing.T) {
+			mockMenu := new(mocks.Usecase)
+
+			menu_id := testCase.expectedInput.menu_id
+
+			e := echo.New()
+
+			req, err := http.NewRequest(echo.GET, "/v1/menu/:menu_id",
+				strings.NewReader(string(menu_id)))
+
+			assert.NoError(t, err)
+			req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
+
+			rec := httptest.NewRecorder()
+			c := e.NewContext(req, rec)
+			c.SetPath("/v1/menu/")
+
+			testCase.configureMock(
+				testCase.expectedInput,
+				mockMenu,
+			)
+
+			handler := MenuHandler{
+				menuUsecase: mockMenu,
+			}
+
+			err = handler.MenuDetail(c)
+			assert.Equal(t, testCase.expectedOutput.err, err)
+			assert.Equal(t, testCase.expectedOutput.statusCode, rec.Code)
+
+		})
+	}
+}
