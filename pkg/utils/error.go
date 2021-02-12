@@ -16,14 +16,6 @@ func switchErrorValidation(err error) (message string) {
 		for _, err := range castedObject {
 			field := SetLowerAndAddSpace(err.Field())
 
-			// Change Field Name
-			switch field {
-			case "msisdn":
-				field = "phone number"
-			case "otp":
-				field = "otp code"
-			}
-
 			// Check Error Type
 			switch err.Tag() {
 			case "required":
