@@ -1,8 +1,6 @@
 package http
 
 import (
-	"strconv"
-
 	"github.com/cpartogi/foodmenu/constant"
 	"github.com/cpartogi/foodmenu/module/menu"
 	"github.com/cpartogi/foodmenu/pkg/utils"
@@ -165,9 +163,10 @@ func (h *MenuHandler) MenuUpdate(c echo.Context) error {
 // @Tags Menu
 // @Accept  json
 // @Produce  json
-// @Param warteg_id query string true "warteg id"
-// @Param menu_type_id query string true "menu type id"
-// @Success 200 {object} response.Base
+// @Param warteg_id query string false  "warteg id"
+// @Param menu_type_id query string false "menu type id"
+// @Param menu_name query string false "menu name"
+// @Success 200 {object} response.SwaggerMenuList
 // @Failure 400 {object} response.Base
 // @Failure 404 {object} response.Base
 // @Failure 422 {object} response.Base
@@ -179,14 +178,9 @@ func (h *MenuHandler) MenuList(c echo.Context) error {
 	queryValues := c.Request().URL.Query()
 	wartegId := queryValues.Get("warteg_id")
 	menu_typeid := queryValues.Get("menu_type_id")
+	menu_name := queryValues.Get("menu_name")
 
-	menu_type_id, parseErr := strconv.Atoi(menu_typeid)
-
-	if parseErr != nil {
-		return utils.ErrorResponse(c, parseErr, map[string]interface{}{})
-	}
-
-	menu, err := h.menuUsecase.MenuList(ctx, wartegId, menu_type_id)
+	menu, err := h.menuUsecase.MenuList(ctx, wartegId, menu_typeid, menu_name)
 	if err != nil {
 		return utils.ErrorResponse(c, err, map[string]interface{}{})
 	}

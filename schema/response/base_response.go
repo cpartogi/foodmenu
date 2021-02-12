@@ -11,19 +11,6 @@ type Base struct {
 	Data       interface{} `json:"data"`
 }
 
-// SuccessReponsePagination is
-type SuccessReponsePagination struct {
-	Base
-	Pagination
-}
-
-// Pagination is
-type Pagination struct {
-	PerPage     int `json:"per_page"`
-	CurrentPage int `json:"current_page"`
-	LastPage    int `json:"last_page"`
-}
-
 // Default for
 type Default struct {
 	Default interface{} `json:"default,omitempty"`

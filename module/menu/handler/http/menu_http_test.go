@@ -522,8 +522,7 @@ func TestMenuUpdate(t *testing.T) {
 
 func TestMenuList(t *testing.T) {
 	type input struct {
-		warteg_id    string
-		menu_type_id int
+		warteg_id string
 	}
 
 	type output struct {
@@ -541,17 +540,16 @@ func TestMenuList(t *testing.T) {
 		)
 	}{
 		{
-			name: "#1 error menu list",
+			name: "#1 success get menu list",
 			expectedInput: input{
-				warteg_id:    "asdfsdfsd",
-				menu_type_id: 1,
+				warteg_id: "asdfsdfsd",
 			},
-			expectedOutput: output{nil, http.StatusInternalServerError},
+			expectedOutput: output{nil, http.StatusOK},
 			configureMock: func(
 				payload input,
 				mockMenu *mocks.Usecase,
 			) {
-				mnResponse := response.MenuList{}
+				mnResponse := []response.MenuList{}
 
 				mockMenu.
 					On("MenuList", mock.Anything, mock.Anything).

@@ -3,6 +3,7 @@ package store
 import (
 	"context"
 	"database/sql"
+	"fmt"
 
 	"github.com/cpartogi/foodmenu/constant"
 	"github.com/cpartogi/foodmenu/schema/request"
@@ -162,12 +163,12 @@ func (q *Queries) MenuUpdate(ctx context.Context, menu_id string, upm request.Me
 	return i, err
 }
 
-const listMenu = `-- name: ListMenu
-SELECT a.menu_type_name, b.menu_name, b.menu_detail, b.menu_picture, b.menu_price FROM tb_menu_type a, tb_menu b WHERE a.menu_type_id=b.menu_type_id AND b.warteg_id=? AND b.menu_type_id=? ORDER BY b.menu_name
-`
+func (q *Queries) MenuList(ctx context.Context, warteg_id, menu_type_id, menu_name string) (list []response.MenuList, err error) {
+	qMenu := `SELECT b.menu_id, a.menu_type_name, b.warteg_id, b.menu_name, b.menu_price FROM tb_menu_type a, tb_menu b WHERE a.menu_type_id=b.menu_type_id AND b.warteg_id like '%%%s%%' AND b.menu_type_id like '%%%s%%' AND b.menu_name like '%%%s%%'  ORDER BY b.menu_name LIMIT 50`
 
-func (q *Queries) MenuList(ctx context.Context, warteg_id string, menu_type_id int) (list []response.MenuList, err error) {
-	rows, err := q.db.QueryContext(ctx, listMenu, warteg_id, menu_type_id)
+	listMenu := fmt.Sprintf(qMenu, warteg_id, menu_type_id, menu_name)
+
+	rows, err := q.db.QueryContext(ctx, listMenu)
 
 	if err != nil {
 		return
@@ -182,10 +183,10 @@ func (q *Queries) MenuList(ctx context.Context, warteg_id string, menu_type_id i
 
 	for rows.Next() {
 		_ = rows.Scan(
+			&i.MenuId,
 			&i.MenuTypeName,
+			&i.WartegId,
 			&i.MenuName,
-			&i.MenuDetail,
-			&i.MenuPicture,
 			&i.MenuPrice,
 		)
 		y = append(y, i)

@@ -96,12 +96,12 @@ func (_m *Usecase) MenuUpdate(ctx context.Context, menu_id string, upm request.M
 	return r0, r1
 }
 
-func (_m *Usecase) MenuList(ctx context.Context, warteg_id string, menu_type_id int) (list []response.MenuList, err error) {
+func (_m *Usecase) MenuList(ctx context.Context, warteg_id, menu_type_id, menu_name string) (list []response.MenuList, err error) {
 	ret := _m.Called(ctx)
 
 	var r0 []response.MenuList
-	if rf, ok := ret.Get(0).(func(context.Context, string, int) []response.MenuList); ok {
-		r0 = rf(ctx, warteg_id, menu_type_id)
+	if rf, ok := ret.Get(0).(func(context.Context, string, string, string) []response.MenuList); ok {
+		r0 = rf(ctx, warteg_id, menu_type_id, menu_name)
 	} else {
 		r0 = ret.Get(0).([]response.MenuList)
 	}

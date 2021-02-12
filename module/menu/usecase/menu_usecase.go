@@ -105,10 +105,10 @@ func (u *MenuUsecase) MenuUpdate(ctx context.Context, menu_id string, upm reques
 
 }
 
-func (u *MenuUsecase) MenuList(ctx context.Context, warteg_id string, menu_type_id int) (list []response.MenuList, err error) {
+func (u *MenuUsecase) MenuList(ctx context.Context, warteg_id, menu_type_id, menu_name string) (list []response.MenuList, err error) {
 	resp := []response.MenuList{}
 
-	menulist, err := u.menuRepo.MenuList(ctx, warteg_id, menu_type_id)
+	menulist, err := u.menuRepo.MenuList(ctx, warteg_id, menu_type_id, menu_name)
 
 	if err != nil {
 		return resp, err
