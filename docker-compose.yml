@@ -1,0 +1,13 @@
+version: "3.8"
+
+services: 
+  app:
+    container_name: "foodmenu"
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "7100:7100"
+    environment:
+      APP_ENV: "development"
+    restart: unless-stopped
